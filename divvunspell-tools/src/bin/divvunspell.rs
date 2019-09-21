@@ -166,6 +166,11 @@ fn main() {
                 .help("Output results in JSON"),
         )
         .arg(
+            Arg::with_name("without-caps")
+                .long("without-caps")
+                .requires("suggest"),
+        )
+        .arg(
             Arg::with_name("WORDS")
                 .multiple(true)
                 .help("The words to be processed"),
@@ -213,7 +218,7 @@ fn main() {
         pool_max: 128,
         pool_start: 128,
         seen_node_sample_rate: 20,
-        with_caps: true,
+        with_caps: !matches.is_present("without-caps"),
     };
 
     if let Some(zhfst_file) = matches.value_of("zhfst") {

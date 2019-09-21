@@ -4,6 +4,7 @@ use std::time::{Instant, SystemTime};
 use clap::{App, AppSettings, Arg};
 use divvunspell::archive::{BoxSpellerArchive, ZipSpellerArchive};
 use divvunspell::speller::suggestion::Suggestion;
+use divvunspell::report::*;
 use divvunspell::speller::SpellerConfig;
 use divvunspell::transducer::thfst::ThfstTransducer;
 use indicatif::{ParallelProgressIterator, ProgressBar, ProgressStyle};
@@ -40,110 +41,6 @@ fn load_words(
         })
         .take(max_words.unwrap_or(std::usize::MAX))
         .collect())
-}
-
-#[derive(Debug, Default, Serialize, PartialOrd, Ord, PartialEq, Eq, Clone, Copy)]
-struct Time {
-    secs: u64,
-    subsec_nanos: u32,
-}
-
-impl std::fmt::Display for Time {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        let ms = self.secs * 1000 + (self.subsec_nanos as u64 / 1_000_000);
-        write!(f, "{}ms", ms)
-    }
-}
-
-#[derive(Debug, Serialize)]
-struct AccuracyResult<'a> {
-    input: &'a str,
-    expected: &'a str,
-    suggestions: Vec<Suggestion>,
-    position: Option<usize>,
-    time: Time,
-}
-
-#[derive(Debug, Serialize)]
-struct Report<'a> {
-    metadata: Option<&'a divvunspell::archive::meta::SpellerMetadata>,
-    config: &'a SpellerConfig,
-    summary: Summary,
-    results: Vec<AccuracyResult<'a>>,
-    start_timestamp: Time,
-    total_time: Time,
-}
-
-#[derive(Serialize, Default, Debug, Clone)]
-struct Summary {
-    total_words: u32,
-    first_position: u32,
-    top_five: u32,
-    any_position: u32,
-    no_suggestions: u32,
-    only_wrong: u32,
-    slowest_lookup: Time,
-    fastest_lookup: Time,
-    average_time: Time,
-    average_time_95pc: Time,
-}
-
-impl std::fmt::Display for Summary {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        let percent =
-            |v: u32| -> String { format!("{:.2}%", v as f32 / self.total_words as f32 * 100f32) };
-
-        write!(
-            f,
-            "[#1] {} [^5] {} [any] {} [none] {} [wrong] {} [fast] {} [slow] {}",
-            percent(self.first_position),
-            percent(self.top_five),
-            percent(self.any_position),
-            percent(self.no_suggestions),
-            percent(self.only_wrong),
-            self.fastest_lookup,
-            self.slowest_lookup
-        )
-    }
-}
-
-impl Summary {
-    fn new<'a>(results: &[AccuracyResult<'a>]) -> Summary {
-        let mut summary = Summary::default();
-
-        results.iter().for_each(|result| {
-            summary.total_words += 1;
-
-            if let Some(position) = result.position {
-                summary.any_position += 1;
-
-                if position == 0 {
-                    summary.first_position += 1;
-                }
-
-                if position < 5 {
-                    summary.top_five += 1;
-                }
-            } else if result.suggestions.is_empty() {
-                summary.no_suggestions += 1;
-            } else {
-                summary.only_wrong += 1;
-            }
-        });
-
-        summary.slowest_lookup = results
-            .iter()
-            .max_by(|x, y| x.time.cmp(&y.time))
-            .unwrap()
-            .time;
-        summary.fastest_lookup = results
-            .iter()
-            .min_by(|x, y| x.time.cmp(&y.time))
-            .unwrap()
-            .time;
-
-        summary
-    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

@@ -26,3 +26,5 @@ rayon = { version = "1.2.0"}
 indicatif = { git = "https://github.com/mitsuhiko/indicatif", features = ["with_rayon"] }
 box_format = { git = "https://github.com/bbqsrc/box" }
 tempdir = "0.3.7"
+structdiff = { path = "../../structdiff/structdiff" }
+structdiff-derive =  { path = "../../structdiff/structdiff-derive" }

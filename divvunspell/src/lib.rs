@@ -12,3 +12,6 @@ pub mod tokenizer;
 pub mod transducer;
 pub mod types;
 pub mod vfs;
+
+#[cfg(feature = "report")]
+pub mod report;

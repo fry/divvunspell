@@ -331,6 +331,8 @@ dependencies = [
  "serde-xml-rs",
  "serde_json",
  "smol_str",
+ "structdiff",
+ "structdiff-derive",
  "tempdir",
  "unic-char-property",
  "unic-char-range",
@@ -351,6 +353,8 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
+ "structdiff",
+ "structdiff-derive",
  "structopt",
  "tempdir",
 ]
@@ -961,6 +965,33 @@ name = "strsim"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
+
+[[package]]
+name = "structdiff"
+version = "0.1.0"
+dependencies = [
+ "heck",
+]
+
+[[package]]
+name = "structdiff-derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "structdiff-macro",
+ "syn",
+]
+
+[[package]]
+name = "structdiff-macro"
+version = "0.1.0"
+dependencies = [
+ "heck",
+ "log",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "structopt"

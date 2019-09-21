@@ -1,21 +1,22 @@
 use serde::{Deserialize, Serialize};
 use serde_xml_rs::{from_reader, Error, ParserConfig};
+use structdiff_derive::Diff;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Diff)]
 pub struct SpellerMetadata {
     pub info: SpellerMetadataInfo,
     pub acceptor: SpellerMetadataAcceptor,
     pub errmodel: SpellerMetadataErrmodel,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Diff)]
 pub struct SpellerTitle {
     pub lang: Option<String>,
     #[serde(rename = "$value")]
     pub value: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Diff)]
 pub struct SpellerMetadataInfo {
     pub locale: String,
     pub title: Vec<SpellerTitle>,
@@ -23,7 +24,7 @@ pub struct SpellerMetadataInfo {
     pub producer: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Diff)]
 pub struct SpellerMetadataAcceptor {
     #[serde(rename = "type", default)]
     pub type_: String,
@@ -32,7 +33,7 @@ pub struct SpellerMetadataAcceptor {
     pub description: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Diff)]
 pub struct SpellerMetadataErrmodel {
     pub id: String,
     pub title: Vec<SpellerTitle>,

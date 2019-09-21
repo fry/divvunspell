@@ -7,12 +7,14 @@ use smol_str::SmolStr;
 use std::f32;
 use std::sync::Arc;
 
+use structdiff_derive::Diff;
+
 use self::worker::SpellerWorker;
 use crate::speller::suggestion::Suggestion;
 use crate::transducer::Transducer;
 use crate::types::{SymbolNumber, Weight};
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Diff)]
 pub struct SpellerConfig {
     pub n_best: Option<usize>,
     pub max_weight: Option<Weight>,
@@ -159,7 +161,7 @@ where
                 for sugg in r.into_iter() {
                     best.entry(sugg.value.clone())
                         .and_modify(|entry| {
-                            if entry as &_ > &sugg.weight {
+                            if entry as &_ < &sugg.weight {
                                 *entry = sugg.weight
                             }
                         })
@@ -232,11 +234,11 @@ where
             let words = word_variants(self.lexicon().alphabet().key_table(), word);
 
             // TODO: check for the actual caps patterns, this is rather naive
-            if words.len() == 2 || words.len() == 3 {
-                self.suggest_caps_merging(word, words, config)
-            } else {
-                self.suggest_caps(word, words, config)
-            }
+            // if words.len() == 2 || words.len() == 3 {
+            //     self.suggest_caps_merging(word, words, config)
+            // } else {
+            self.suggest_caps(word, words, config)
+        // }
         } else {
             self.suggest_single(word, config)
         }

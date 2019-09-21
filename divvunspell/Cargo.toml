@@ -27,7 +27,11 @@ lifeguard = "0.6"
 smol_str = { version = "0.1.13", features = ["serde"] }
 mimallocator = "0.1"
 box_format = { git = "https://github.com/bbqsrc/box" }
+structdiff = { path = "../../structdiff/structdiff" }
+structdiff-derive =  { path = "../../structdiff/structdiff-derive" }
 
 [features]
+default = []
 compression = ["zip/deflate"]
 convert = []
+report = []

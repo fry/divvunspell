@@ -49,7 +49,14 @@ fn without_punctuation(alphabet: &[SmolStr]) -> Vec<SmolStr> {
 }
 
 pub fn word_variants(alphabet: &[SmolStr], word: &str) -> Vec<SmolStr> {
-    let alphabet = without_punctuation(alphabet);
+    let without_punc_alphabet = without_punctuation(alphabet);
+
+    if word
+        .chars()
+        .any(|ch| !without_punc_alphabet.contains(&SmolStr::from(ch.to_string())))
+    {
+        return vec![SmolStr::from(word)];
+    }
 
     let mut base = vec![
         word.into(),
@@ -100,5 +107,6 @@ mod tests {
         println!("{:?}", word_variants(&a, "Giella"));
         println!("{:?}", word_variants(&a, "abc"));
         println!("{:?}", word_variants(&a, "$GIELLA$"));
+        println!("{:?}", word_variants(&a, "Afrihkas"));
     }
 }
