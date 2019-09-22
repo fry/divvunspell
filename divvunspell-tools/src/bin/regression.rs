@@ -3,7 +3,7 @@ use std::fs::File;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use divvunspell::report::*;
-use structdiff::Diff;
+use structdiff::{Apply, Diff};
 
 #[derive(Debug, StructOpt)]
 struct Opts {
@@ -20,10 +20,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let file_a = File::open(&opts.diff_a)?;
     let file_b = File::open(&opts.diff_b)?;
 
-    let report_a: Report = serde_json::from_reader(file_a)?;
+    let mut report_a: Report = serde_json::from_reader(file_a)?;
     let report_b: Report = serde_json::from_reader(file_b)?;
-    let changesets = report_a.changeset(&report_b);
+    let changeset = report_a.changeset(&report_b);
 
-    println!("{:#?}", &changesets);
+    // println!("{:#?}", &changeset);
+    changeset.apply(&mut report_a);
+    assert_eq!(report_a, report_b);
     Ok(())
 }
