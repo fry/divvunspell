@@ -20,12 +20,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     let file_a = File::open(&opts.diff_a)?;
     let file_b = File::open(&opts.diff_b)?;
 
-    let mut report_a: Report = serde_json::from_reader(file_a)?;
+    let report_a: Report = serde_json::from_reader(file_a)?;
     let report_b: Report = serde_json::from_reader(file_b)?;
-    let changeset = report_a.changeset(&report_b);
+    let changeset = report_a.results.changeset(&report_b.results);
+
+    let mut results = report_b.results;
 
     // println!("{:#?}", &changeset);
-    changeset.apply(&mut report_a);
-    assert_eq!(report_a, report_b);
+    changeset.apply(&mut results);
+    assert_eq!(&report_a.results, &results);
     Ok(())
 }

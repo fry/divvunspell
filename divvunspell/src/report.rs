@@ -1,9 +1,6 @@
 
 use crate::speller::SpellerConfig;
-use serde_derive::{Deserialize, Serialize};
-use std::borrow::Cow;
-use treediff::Value;
-use structdiff::Diff;
+use serde::{Deserialize, Serialize};
 use structdiff_derive::Diff;
 
 use crate::speller::SpellerConfigChangeset;
@@ -29,7 +26,7 @@ pub struct Suggestion {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Diff)]
 pub struct Report {
-    pub metadata: crate::archive::meta::SpellerMetadata,
+    pub metadata: Option<crate::archive::meta::SpellerMetadata>,
     pub config: SpellerConfig,
     pub summary: Summary,
     pub results: Vec<AccuracyResult>,

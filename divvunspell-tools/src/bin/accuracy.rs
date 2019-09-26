@@ -3,13 +3,11 @@ use std::time::{Instant, SystemTime};
 
 use clap::{App, AppSettings, Arg};
 use divvunspell::archive::{BoxSpellerArchive, ZipSpellerArchive};
-use divvunspell::speller::suggestion::Suggestion;
 use divvunspell::report::*;
 use divvunspell::speller::SpellerConfig;
 use divvunspell::transducer::thfst::ThfstTransducer;
 use indicatif::{ParallelProgressIterator, ProgressBar, ProgressStyle};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
-use serde::Serialize;
 
 static CFG: SpellerConfig = SpellerConfig {
     max_weight: Some(50000.0),
@@ -144,10 +142,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             let position = suggestions.iter().position(|x| x.value == expected);
 
             AccuracyResult {
-                input,
-                expected,
+                input: input.clone(),
+                expected: expected.clone(),
                 time,
-                suggestions,
+                suggestions: suggestions.into_iter().map(|x| Suggestion {
+                    value: x.value.to_string(),
+                    weight: x.weight
+                }).collect(),
                 position,
             }
         })
@@ -172,8 +173,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     if let Some(path) = matches.value_of("json-output") {
         let output = std::fs::File::create(path)?;
         let report = Report {
-            metadata: archive.metadata(),
-            config: &cfg,
+            metadata: archive.metadata().map(|x| x.to_owned()),
+            config: cfg,
             summary,
             results,
             start_timestamp,
