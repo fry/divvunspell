@@ -331,8 +331,8 @@ dependencies = [
  "serde-xml-rs",
  "serde_json",
  "smol_str",
- "structdiff",
- "structdiff-derive",
+ "structdiff 0.1.0",
+ "structdiff-derive 0.1.0",
  "tempdir",
  "unic-char-property",
  "unic-char-range",
@@ -353,8 +353,8 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "structdiff",
- "structdiff-derive",
+ "structdiff 0.1.0 (git+https://github.com/bbqsrc/structdiff)",
+ "structdiff-derive 0.1.0 (git+https://github.com/bbqsrc/structdiff)",
  "structopt",
  "tempdir",
 ]
@@ -969,6 +969,14 @@ checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
 [[package]]
 name = "structdiff"
 version = "0.1.0"
+source = "git+https://github.com/bbqsrc/structdiff#c9ab3bed4851b076476099350b26bab4009bdf22"
+dependencies = [
+ "heck",
+]
+
+[[package]]
+name = "structdiff"
+version = "0.1.0"
 dependencies = [
  "heck",
 ]
@@ -976,9 +984,31 @@ dependencies = [
 [[package]]
 name = "structdiff-derive"
 version = "0.1.0"
+source = "git+https://github.com/bbqsrc/structdiff#c9ab3bed4851b076476099350b26bab4009bdf22"
 dependencies = [
  "proc-macro2",
- "structdiff-macro",
+ "structdiff-macro 0.1.0 (git+https://github.com/bbqsrc/structdiff)",
+ "syn",
+]
+
+[[package]]
+name = "structdiff-derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "structdiff-macro 0.1.0",
+ "syn",
+]
+
+[[package]]
+name = "structdiff-macro"
+version = "0.1.0"
+source = "git+https://github.com/bbqsrc/structdiff#c9ab3bed4851b076476099350b26bab4009bdf22"
+dependencies = [
+ "heck",
+ "log",
+ "proc-macro2",
+ "quote",
  "syn",
 ]
 
