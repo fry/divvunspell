@@ -119,19 +119,6 @@ impl MappedIndexTable {
         Some(weight)
     }
 
-    #[cfg(not(all(target_arch = "arm", target_pointer_width = "32")))]
-    #[inline(always)]
-    pub fn final_weight(&self, i: TransitionTableIndex) -> Option<Weight> {
-        if i >= self.size {
-            return None;
-        }
-
-        let index = self.offset + INDEX_TABLE_SIZE * i as usize;
-        let weight: Weight = unsafe { ptr::read(self.mmap.as_ptr().add(index + 2) as *const _) };
-
-        Some(weight)
-    }
-
     #[inline(always)]
     pub fn is_final(&self, i: TransitionTableIndex) -> bool {
         self.input_symbol(i) == None && self.target(i) != None
